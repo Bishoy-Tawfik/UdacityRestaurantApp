@@ -103,3 +103,12 @@ h6 {
     text-align: center;
     text-transform: uppercase;
 }
+
+#breadcrumb {
+    padding: 10px 40px 16px;
+    list-style: none;
+    background-color: #eee;
+    font-size: 17px;
+    margin: 0;
+    width: 100%;
+}

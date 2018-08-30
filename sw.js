@@ -4,22 +4,20 @@ if (typeof idb === "undefined") {
 const cacheName = `v1`;
 
 self.addEventListener('install', e => {
-//     var dbPromise = idb.open("myDB",1);
-//        dbPromise.createObjectStore("firstOS");
-//         var transaction = dbPromise.transaction(["people"],"readwrite");
-//         var store = transaction.objectStore("people");
-//         //Define a person
-// var person = {
-//     name:name,
-//     email:email,
-//     created:new Date()
-// }
- 
-// //Perform the add
-// var request = store.add(person,1);
 
-
-
+  fetch('http://localhost:1337/restaurants').then(function(response) {
+    return response.json();
+  }).then(function(data) {
+    //console.log(data);
+    var dbPromise = idb.open('restaurantsDB', 1, function(upgradeDb) {
+        if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+          var restaurantsOS = upgradeDb.createObjectStore('restaurants');
+          restaurantsOS.put(data, 'restaurants');
+        }
+      });
+  }).catch(function(error) {
+    console.log('Request failed', error);  
+  });
 
 
     const timeStamp = Date.now();
@@ -56,16 +54,32 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    var dbPromise = idb.open('restaurantsDB', 1, function(upgradeDb) {
-        if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-          var restaurantsOS = upgradeDb.createObjectStore('restaurants', {keyPath: 'id'});
-        }
-      });
+var handled = false;
+    if(event.request.url=='http://localhost:1337/restaurants')
+    {
+        event.respondWith(
+            idb.open('restaurantsDB').then(function(db) {
+                var tx = db.transaction('restaurants', 'readonly');
+                var store = tx.objectStore('restaurants');
+                return store.get('restaurants');
+              }).then(function(val) {
+                //return val;
+                console.log(val);
+                handled = true;
+                return new Response(JSON.stringify(val),  { "status" : 200 , "statusText" : "MyCustomResponse!" })
+              })
+        )
+        
+     }   
+     if(handled !=true)
+     {     
     event.respondWith(
         caches.open(cacheName)
         .then(cache => cache.match(event.request, { ignoreSearch: true }))
         .then(response => {
+            
             return response || fetch(event.request);
         })
     );
+   }
 });

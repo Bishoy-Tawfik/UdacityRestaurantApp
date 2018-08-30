@@ -1,8 +1,12 @@
+
+//import idb from './node_modules/idb/lib/idb.js'
+
+
+
 /**
  * Common database helper functions.
- */
-class DBHelper {
-
+ */ class DBHelper {
+     
     /**
      * Database URL.
      * Change this to restaurants.json file location on your server.
@@ -18,19 +22,16 @@ class DBHelper {
      * Fetch all restaurants.
      */
     static fetchRestaurants(callback) {
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', DBHelper.DATABASE_URL);
-        xhr.onload = () => {
-            if (xhr.status === 200) { // Got a success response from server!
-                const json = JSON.parse(xhr.responseText);
-                //const restaurants = json.restaurants;
-                callback(null, json);
-            } else { // Oops!. Got an error from server.
-                const error = (`Request failed. Returned status of ${xhr.status}`);
-                callback(error, null);
-            }
-        };
-        xhr.send();
+
+        fetch(DBHelper.DATABASE_URL).then(function(response) {
+            return response.json();
+          }).then(function(data) {
+            callback(null, data);
+          }).catch(function() {
+            const error = (`Request failed`);
+            callback(error, null);
+          });
+
     }
 
     /**

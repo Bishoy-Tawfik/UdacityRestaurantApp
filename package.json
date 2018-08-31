@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Bishoy-Tawfik/UdacityRestaurantApp#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "idb": "^2.1.3"
   }
 }

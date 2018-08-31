@@ -25,4 +25,10 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
 
 
+### How to run the application
+
+First time you run the application make sure that you have have the server side is running.
+You could simply start the application through the command npm start, the application uses express to start a
+server on the port 8000
+
 

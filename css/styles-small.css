@@ -11,7 +11,7 @@
 }
 
 #restaurant-name {
-    color: #f18200;
+    color: black;
     font-family: Arial, sans-serif;
     font-size: 12pt;
     font-weight: 200;
@@ -34,7 +34,7 @@
 }
 
 #reviews-container h2 {
-    color: #f58500;
+    color: black;
     font-size: 15pt;
     font-weight: 300;
     letter-spacing: -1px;
@@ -96,7 +96,7 @@ h6 {
 
 #footer {
     background-color: #444;
-    color: #aaa;
+    color: white;
     font-size: 8pt;
     letter-spacing: 1px;
     padding: 0px;

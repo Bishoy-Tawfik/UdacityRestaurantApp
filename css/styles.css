@@ -26,7 +26,7 @@ li {
 }
 
 a {
-    color: orange;
+    color: white;
     text-decoration: none;
 }
 
@@ -37,7 +37,7 @@ a:focus {
 }
 
 a img {
-    border: none 0px #fff;
+    border: none 0px black;
 }
 
 h1,
@@ -72,7 +72,7 @@ section {
 
 #footer {
     background-color: #444;
-    color: #aaa;
+    color: white;
     font-size: 8pt;
     letter-spacing: 1px;
     padding: 25px;
@@ -95,7 +95,7 @@ nav h1 {
 }
 
 nav h1 a {
-    color: #fff;
+    color: white;
     font-size: 14pt;
     font-weight: 200;
     letter-spacing: 10px;
@@ -131,7 +131,7 @@ nav h1 a {
 /* Add a color to all links inside the list */
 
 #breadcrumb li a {
-    color: #0275d8;
+    color: black;
     text-decoration: none;
 }
 
@@ -139,7 +139,7 @@ nav h1 a {
 /* Add a color on mouse-over */
 
 #breadcrumb li a:hover {
-    color: #01447e;
+    color: black;
     text-decoration: underline;
 }
 
@@ -163,7 +163,7 @@ nav h1 a {
 }
 
 .filter-options h2 {
-    color: white;
+    color: black;
     font-size: 1rem;
     font-weight: normal;
     line-height: 2;
@@ -216,7 +216,7 @@ nav h1 a {
 }
 
 #restaurants-list li h1 {
-    color: #f18200;
+    color: black;
     font-family: Arial, sans-serif;
     font-size: 14pt;
     font-weight: 200;
@@ -234,7 +234,7 @@ nav h1 a {
 #restaurants-list li a {
     background-color: orange;
     border-bottom: 3px solid #eee;
-    color: #fff;
+    color: black;
     display: inline-block;
     font-size: 10pt;
     margin: 15px 0 0;
@@ -276,7 +276,7 @@ nav h1 a {
 }
 
 #restaurant-name {
-    color: #f18200;
+    color: black;
     font-family: Arial, sans-serif;
     font-size: 20pt;
     font-weight: 200;
@@ -321,7 +321,7 @@ nav h1 a {
 }
 
 #reviews-container h2 {
-    color: #f58500;
+    color: black;
     font-size: 24pt;
     font-weight: 300;
     letter-spacing: -1px;

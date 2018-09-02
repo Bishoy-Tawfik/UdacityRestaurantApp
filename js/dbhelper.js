@@ -1,12 +1,12 @@
-
 //import idb from './node_modules/idb/lib/idb.js'
 
 
 
 /**
  * Common database helper functions.
- */ class DBHelper {
-     
+ */
+class DBHelper {
+
     /**
      * Database URL.
      * Change this to restaurants.json file location on your server.
@@ -17,6 +17,12 @@
         const port = 1337
         return `http://localhost:${port}/restaurants`
     }
+    static get DATABASEReviews_URL() {
+        //const port = 8000 // Change this to your server port
+        //return `http://localhost:${port}/data/restaurants.json`;
+        const port = 1337
+        return `http://localhost:${port}/reviews`
+    }
 
     /**
      * Fetch all restaurants.
@@ -25,18 +31,52 @@
 
         fetch(DBHelper.DATABASE_URL).then(function(response) {
             return response.json();
-          }).then(function(data) {
+        }).then(function(data) {
             callback(null, data);
-          }).catch(function() {
+        }).catch(function() {
             const error = (`Request failed`);
             callback(error, null);
-          });
+        });
 
     }
 
     /**
-     * Fetch a restaurant by its ID.
+     * Fetch all reviews.
      */
+    static fetchReviews(callback) {
+
+        fetch(DBHelper.DATABASEReviews_URL).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            //console.log(data);
+            callback(null, data);
+        }).catch(function() {
+            const error = (`Request failed`);
+            callback(error, null);
+        });
+
+    }
+
+    static AddReview(review) {
+            fetch('http://localhost:1337/reviews/', {
+                method: 'POST',
+                body: JSON.stringify(review),
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => {
+
+                res.json().then(succsess => {
+                    console.log(succsess);
+                    alert('Thanks for the feedback!');
+                })
+
+            }).catch(error => {
+                console.log(error);
+                alert('You are currently offline, the comment will be added once the server comes online!');
+            });
+        }
+        /**
+         * Fetch a restaurant by its ID.
+         */
     static fetchRestaurantById(id, callback) {
         // fetch all restaurants with proper error handling.
         DBHelper.fetchRestaurants((error, restaurants) => {
@@ -45,7 +85,20 @@
             } else {
                 const restaurant = restaurants.find(r => r.id == id);
                 if (restaurant) { // Got the restaurant
-                    callback(null, restaurant);
+                    DBHelper.fetchReviews((error, reviews) => {
+                        if (reviews) {
+
+                            const restaurantReviews = reviews.filter(r => r.restaurant_id == restaurant.id);
+                            if (restaurantReviews) {
+                                restaurant.reviews = new Array();
+                                restaurant.reviews = restaurantReviews;
+                                callback(null, restaurant);
+                            } else {
+                                callback(null, restaurant);;
+                            }
+                        } else { callback(null, restaurant); }
+                    });
+
                 } else { // Restaurant does not exist in the database
                     callback('Restaurant does not exist', null);
                 }

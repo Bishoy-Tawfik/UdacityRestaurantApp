@@ -5,20 +5,33 @@ const cacheName = `v1`;
 
 self.addEventListener('install', e => {
 
-  fetch('http://localhost:1337/restaurants').then(function(response) {
-    return response.json();
-  }).then(function(data) {
-    //console.log(data);
-    var dbPromise = idb.open('restaurantsDB', 1, function(upgradeDb) {
-        if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-          var restaurantsOS = upgradeDb.createObjectStore('restaurants');
-          restaurantsOS.put(data, 'restaurants');
-        }
-      });
-  }).catch(function(error) {
-    console.log('Request failed', error);  
-  });
+    fetch('http://localhost:1337/restaurants').then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        //console.log(data);
+        var dbPromise = idb.open('restaurantsDB', 1, function(upgradeDb) {
+            if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+                var restaurantsOS = upgradeDb.createObjectStore('restaurants');
+                restaurantsOS.put(data, 'restaurants');
+            }
+        });
+    }).catch(function(error) {
+        console.log('Request failed', error);
+    });
 
+    fetch('http://localhost:1337/reviews').then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        //console.log(data);
+        var dbReviewsPromise = idb.open('reviewsDB', 1, function(upgradeDb) {
+            if (!upgradeDb.objectStoreNames.contains('reviews')) {
+                var reviewsOS = upgradeDb.createObjectStore('reviews');
+                reviewsOS.put(data, 'reviews');
+            }
+        });
+    }).catch(function(error) {
+        console.log('Request failed', error);
+    });
 
     const timeStamp = Date.now();
     e.waitUntil(
@@ -54,32 +67,45 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-var handled = false;
-    if(event.request.url=='http://localhost:1337/restaurants')
-    {
+    var handled = false;
+    if (event.request.url == 'http://localhost:1337/restaurants') {
         event.respondWith(
             idb.open('restaurantsDB').then(function(db) {
                 var tx = db.transaction('restaurants', 'readonly');
                 var store = tx.objectStore('restaurants');
                 return store.get('restaurants');
-              }).then(function(val) {
+            }).then(function(val) {
                 //return val;
                 console.log(val);
                 handled = true;
-                return new Response(JSON.stringify(val),  { "status" : 200 , "statusText" : "MyCustomResponse!" })
-              })
+                return new Response(JSON.stringify(val), { "status": 200, "statusText": "MyCustomResponse!" })
+            })
         )
-        
-     }   
-     if(handled !=true)
-     {     
-    event.respondWith(
-        caches.open(cacheName)
-        .then(cache => cache.match(event.request, { ignoreSearch: true }))
-        .then(response => {
-            
-            return response || fetch(event.request);
-        })
-    );
-   }
+
+    }
+    if (event.request.type == 'GET' && event.request.url == 'http://localhost:1337/reviews') {
+        event.respondWith(
+            idb.open('reviewsDB').then(function(db) {
+                var tx = db.transaction('reviews', 'readonly');
+                var store = tx.objectStore('reviews');
+                return store.get('reviews');
+            }).then(function(val) {
+                //return val;
+                console.log(val);
+                handled = true;
+                return new Response(JSON.stringify(val), { "status": 200, "statusText": "MyCustomResponse!" })
+            })
+        )
+
+    }
+    if (handled != true) {
+        event.respondWith(
+            caches.open(cacheName)
+            .then(cache => cache.match(event.request, { ignoreSearch: true }))
+            .then(response => {
+
+                return response || fetch(event.request);
+            })
+        );
+    }
 });

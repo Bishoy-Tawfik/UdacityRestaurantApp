@@ -85,7 +85,7 @@ section {
 
 nav {
     width: 100%;
-    height: 60px;
+    /* height: 60px; */
     background-color: #252831;
     text-align: center;
 }
@@ -108,7 +108,7 @@ nav h1 a {
     background-color: #eee;
     font-size: 17px;
     margin: 0;
-    width: calc(50% - 80px);
+    /* width: calc(50% - 80px); */
 }
 
 
@@ -314,6 +314,14 @@ nav h1 a {
     border-top: 1px solid #fff;
     padding: 140px 50px 30px;
     width: 50%;
+}
+
+#add-review-container {
+    border-bottom: 1px solid #d9d9d9;
+    border-top: 1px solid #fff;
+    padding: 120px 50px 150px;
+    width: 100%;
+    height: 100%;
 }
 
 #reviews-container {

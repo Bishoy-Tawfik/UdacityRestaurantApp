@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/styles.css" type="text/css">
     <link rel="stylesheet" media='screen and (max-width: 450px)' href="css/styles-small.css">
     <link rel="stylesheet" media='screen and (min-width: 451px) and (max-width: 800px)' href="css/styles-med.css">
-    <title>Restaurant Info</title>
+    <title>Add review</title>
 </head>
 
 <body class="inside">
@@ -21,12 +21,11 @@
     <header>
         <!-- Beginning nav -->
         <nav aria-label="Breadcrumb">
-            <h1><a tabindex="0" href="/">Restaurant Reviews</a></h1>
+            <h1><a tabindex="0" href="/">Add Review</a></h1>
 
             <!-- Beginning breadcrumb -->
             <ul id="breadcrumb" aria-label="breadcrumb">
                 <li><a tabindex="1" href="/">Home</a></li>
-                <li><a tabindex="1" href="/review.html">Add review</a></li>
             </ul>
             <!-- End breadcrumb -->
             <!-- End nav -->
@@ -36,26 +35,21 @@
 
     <!-- Beginning main -->
     <main id="maincontent">
-        <!-- Beginning map -->
-        <section id="map-container">
-            <div id="map" role="application" aria-label="map"></div>
-        </section>
-        <!-- End map -->
         <!-- Beginning restaurant -->
-        <section id="restaurant-container">
-            <h2 tabindex="2" id="restaurant-name"></h2>
-            <img id="restaurant-img">
-            <p tabindex="3" id="restaurant-cuisine"></p>
-            <p tabindex="4" id="restaurant-address"></p>
-            <table tabindex="5" id="restaurant-hours"></table>
+        <section id="add-review-container">
+            <h2>Your user name:</h2>
+            <input type="text" aria-label="Your user name" id="txtUserName" />
+            <h2>Restaurant ID:</h2>
+            <input type="number" aria-label="Restaurant ID" id="txtRestaurantID" />
+            <h2>Rating:</h2>
+            <input type="number" aria-label="Rating" id="txtRating" />
+            <h2>Comment:</h2>
+            <textarea rows="4" id="txtComment" aria-label="Comment" cols="30">
+            </textarea>
+            <button type="submit" onclick="AddReview()">Submit</button>
         </section>
 
         <!-- end restaurant -->
-        <!-- Beginning reviews -->
-        <section id="reviews-container">
-            <ul id="reviews-list"></ul>
-        </section>
-        <!-- End reviews -->
     </main>
     <!-- End main -->
 
@@ -68,11 +62,6 @@
     <!-- Beginning scripts -->
     <!-- Database helpers -->
     <script type="text/javascript" src="js/dbhelper.js"></script>
-    <!-- Main javascript file -->
-    <script type="text/javascript" src="js/restaurant_info.js"></script>
-    <!-- Google Maps -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4&libraries=places&callback=initMap"></script>
-    <!-- End scripts -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', {
@@ -85,6 +74,21 @@
             navigator.serviceWorker.ready.then(function(registration) {
                 console.log('Service Worker Ready');
             });
+        }
+
+        function AddReview() {
+            var userName = document.getElementById('txtUserName').value;
+            var restaurantID = document.getElementById('txtRestaurantID').value;
+            var ratingVal = document.getElementById('txtRating').value;
+            var comment = document.getElementById('txtComment').value;
+            let review = {
+                restaurant_id: restaurantID,
+                name: userName,
+                rating: ratingVal,
+                comments: comment
+            }
+            DBHelper.AddReview(review);
+
         }
     </script>
 </body>

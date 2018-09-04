@@ -46,7 +46,7 @@
             <h2>Comment:</h2>
             <textarea rows="4" id="txtComment" aria-label="Comment" cols="30">
             </textarea>
-            <button type="submit" onclick="AddReview()">Submit</button>
+            <button type="submit" id="btnAddReview">Submit</button>
         </section>
 
         <!-- end restaurant -->
@@ -62,33 +62,53 @@
     <!-- Beginning scripts -->
     <!-- Database helpers -->
     <script type="text/javascript" src="js/dbhelper.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb-keyval@3/dist/idb-keyval-iife.min.js"></script>
+    <script src="./node_modules/idb/lib/idb.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
+
             navigator.serviceWorker.register('/sw.js', {
                     scope: '/'
                 })
                 .then(function(registration) {
-                    console.log('Service Worker Registered');
+
+                    var submitButton = document.getElementById('btnAddReview');
+                    submitButton.addEventListener('click', () => {
+                        var userName = document.getElementById('txtUserName').value;
+                        var restaurantID = document.getElementById('txtRestaurantID').value;
+                        var ratingVal = document.getElementById('txtRating').value;
+                        var comment = document.getElementById('txtComment').value;
+                        let reviewObj = {
+                            restaurant_id: restaurantID,
+                            name: userName,
+                            rating: ratingVal,
+                            comments: comment
+                        }
+                        let keyToInsert = restaurantID + userName + ratingVal;
+                        idbKeyval.set(keyToInsert, reviewObj);
+
+                        idb.open('reviewsDB').then(function(db) {
+                            var tx = db.transaction('reviews', 'readwrite');
+                            var store = tx.objectStore('reviews');
+                            return store.get('reviews');
+                        }).then(function(val) {
+                            val.push(reviewObj);
+                            idb.open('reviewsDB').then(function(db) {
+                                var tx = db.transaction('reviews', 'readwrite');
+                                var store = tx.objectStore('reviews');
+                                store.delete('reviews');
+                                store.put(val, 'reviews');
+                            });
+                            registration.sync.register('add-review').then(() => {
+                                console.log('Sync registered');
+                                console.log('Service Worker Registered');
+                            });
+                        });
+                    });
+                    navigator.serviceWorker.ready.then(function(registration) {
+                        console.log('Service Worker Ready');
+                    });
                 });
-
-            navigator.serviceWorker.ready.then(function(registration) {
-                console.log('Service Worker Ready');
-            });
-        }
-
-        function AddReview() {
-            var userName = document.getElementById('txtUserName').value;
-            var restaurantID = document.getElementById('txtRestaurantID').value;
-            var ratingVal = document.getElementById('txtRating').value;
-            var comment = document.getElementById('txtComment').value;
-            let review = {
-                restaurant_id: restaurantID,
-                name: userName,
-                rating: ratingVal,
-                comments: comment
-            }
-            DBHelper.AddReview(review);
-
         }
     </script>
 </body>

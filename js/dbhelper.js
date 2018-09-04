@@ -57,26 +57,10 @@ class DBHelper {
 
     }
 
-    static AddReview(review) {
-            fetch('http://localhost:1337/reviews/', {
-                method: 'POST',
-                body: JSON.stringify(review),
-                headers: { 'Content-Type': 'application/json' },
-            }).then(res => {
 
-                res.json().then(succsess => {
-                    console.log(succsess);
-                    alert('Thanks for the feedback!');
-                })
-
-            }).catch(error => {
-                console.log(error);
-                alert('You are currently offline, the comment will be added once the server comes online!');
-            });
-        }
-        /**
-         * Fetch a restaurant by its ID.
-         */
+    /**
+     * Fetch a restaurant by its ID.
+     */
     static fetchRestaurantById(id, callback) {
         // fetch all restaurants with proper error handling.
         DBHelper.fetchRestaurants((error, restaurants) => {

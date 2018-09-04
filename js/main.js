@@ -177,6 +177,19 @@ createRestaurantHTML = (restaurant) => {
     more.href = DBHelper.urlForRestaurant(restaurant);
     li.append(more)
 
+    const labelForToggle = document.createElement('label');
+    labelForToggle.innerHTML = 'Your favorite?';
+    li.append(labelForToggle)
+
+    const isFavToggle = document.createElement('label');
+    isFavToggle.setAttribute('aria-label', 'Is your favorite');
+    isFavToggle.setAttribute('class', 'switch');
+    if (restaurant.is_favorite == "true") {
+        isFavToggle.innerHTML = '<input type="checkbox" aria-label="Is your favorite" checked="true" onclick="changeFavorite(this.checked)"><span  class="slider round"></span></label>';
+    } else {
+        isFavToggle.innerHTML = '<input type="checkbox" aria-label="Is your favorite"  onclick="changeFavorite(this.checked,' + restaurant.id + ')"><span class="slider round"></span></label>';
+    }
+    li.append(isFavToggle)
     return li
 }
 
@@ -192,4 +205,18 @@ addMarkersToMap = (restaurants = self.restaurants) => {
         });
         self.markers.push(marker);
     });
+}
+
+function changeFavorite(checked, restaurantId) {
+    fetch('http://localhost:1337/restaurants/' + restaurantId + '/?is_favorite=' + checked, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    }).then(res => {
+        console.log('Is favorite was updated correctly!');
+    }).catch(err => {
+        console.log('Is favorite failed to be updated!');
+    })
+
 }

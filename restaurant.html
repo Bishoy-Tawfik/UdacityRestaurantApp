@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/styles.css" type="text/css">
     <link rel="stylesheet" media='screen and (max-width: 450px)' href="css/styles-small.css">
     <link rel="stylesheet" media='screen and (min-width: 451px) and (max-width: 800px)' href="css/styles-med.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.15.2/URI.min.js"></script>
+    <script src="js/URI.min.js" async></script>
     <title>Restaurant Info</title>
 </head>
 
@@ -38,8 +38,11 @@
     <!-- Beginning main -->
     <main id="maincontent">
         <!-- Beginning map -->
+
         <section id="map-container">
-            <div id="map" role="application" aria-label="map"></div>
+            <h1 id="viewMap" style="color: white;" onclick="swap_map()">Click Here to view the map</h1>
+            <!-- <img id="static_map" onclick="swap_map()" src="https://maps.googleapis.com/maps/api/staticmap?center=33.29939,-84.55608&zoom=14&size=500x300&format=jpg&maptype=roadmap  &markers=color:red%7Clabel:S%7C33.29939,-84.55608&key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4"></img> -->
+            <div id="map" role="application" style="display: none" aria-label="map"></div>
         </section>
         <!-- End map -->
         <!-- Beginning restaurant -->
@@ -75,6 +78,12 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4&libraries=places&callback=initMap"></script>
     <!-- End scripts -->
     <script>
+        const swap_map = () => {
+            if (document.getElementById('map').style.display === 'none') {
+                document.getElementById('map').style.display = 'block';
+                document.getElementById('viewMap').style.display = 'none'
+            }
+        }
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', {
                     scope: '/'
@@ -88,22 +97,22 @@
             });
         }
 
-function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-var idVal = getParameterByName('id')
-var l = document.getElementById('dynamicLink');
-var uri = URI(l.href);
-var qs = uri.query(true);
-qs.id = idVal
-uri.query(qs);
-l.href = uri;
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+        var idVal = getParameterByName('id')
+        var l = document.getElementById('dynamicLink');
+        var uri = URI(l.href);
+        var qs = uri.query(true);
+        qs.id = idVal
+        uri.query(qs);
+        l.href = uri;
     </script>
 </body>
 

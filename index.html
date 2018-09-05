@@ -25,7 +25,9 @@
 
     <main id="maincontent">
         <section id="map-container">
-            <div id="map" role="application"></div>
+            <h1 id="viewMap" onclick="swap_map()">Click Here to view the map</h1>
+            <!-- <img id="static_map" onclick="swap_map()" src="https://maps.googleapis.com/maps/api/staticmap?center=33.29939,-84.55608&zoom=14&size=500x300&format=jpg&maptype=roadmap  &markers=color:red%7Clabel:S%7C33.29939,-84.55608&key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4"></img> -->
+            <div id="map" style="display: none" role="application"></div>
         </section>
         <section>
             <div class="filter-options">
@@ -41,6 +43,7 @@
         </section>
     </main>
     <script src="./node_modules/idb/lib/idb.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4&libraries=places&callback=initMap"></script>
@@ -50,6 +53,44 @@
         Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
     </footer>
     <script>
+        $(window).load(function() {
+            const lazyLoad = function() {
+                let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+                let active = false;
+
+
+                if (active === false) {
+                    active = true;
+
+                    setTimeout(function() {
+                        lazyImages.forEach(function(lazyImage) {
+                            if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
+                                lazyImage.src = '/img/' + lazyImage.name + '.webp';
+                                //lazyImage.srcset = lazyImage.dataset.srcset;
+                                lazyImage.classList.remove("lazy");
+
+                                lazyImages = lazyImages.filter(function(image) {
+                                    return image !== lazyImage;
+                                });
+
+                                if (lazyImages.length === 0) {
+                                    document.removeEventListener("scroll", lazyLoad);
+                                    window.removeEventListener("resize", lazyLoad);
+                                    window.removeEventListener("orientationchange", lazyLoad);
+                                }
+                            }
+                        });
+
+                        active = false;
+                    }, 200);
+                }
+            };
+
+            document.addEventListener("scroll", lazyLoad);
+            window.addEventListener("resize", lazyLoad);
+            window.addEventListener("orientationchange", lazyLoad);
+        })
+
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', {
                     scope: '/'
@@ -61,6 +102,13 @@
             navigator.serviceWorker.ready.then(function(registration) {
                 console.log('Service Worker Ready');
             });
+        }
+
+        const swap_map = () => {
+            if (document.getElementById('map').style.display === 'none') {
+                document.getElementById('map').style.display = 'block';
+                document.getElementById('viewMap').style.display = 'none'
+            }
         }
     </script>
 </body>

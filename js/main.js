@@ -154,9 +154,10 @@ createRestaurantHTML = (restaurant) => {
     const li = document.createElement('li');
 
     const image = document.createElement('img');
-    image.className = 'restaurant-img';
-    image.src = DBHelper.imageUrlForRestaurant(restaurant);
+    image.className = 'restaurant-img lazy';
+    image.src = "/img/placeholder-image.jpg";
     image.alt = 'Image of restaurant ' + restaurant.name;
+    image.name = DBHelper.imageUrlForRestaurant(restaurant);
     li.append(image);
 
     const name = document.createElement('h2');
@@ -221,7 +222,7 @@ function changeFavorite(checked, restaurantId) {
             return store.get('restaurants');
         }).then(function(val) {
             objIndex = val.findIndex((obj => obj.id == restaurantId));
-            val[objIndex].is_favorite=checked.toString();
+            val[objIndex].is_favorite = checked.toString();
             idb.open('restaurantsDB').then(function(db) {
                 var tx = db.transaction('restaurants', 'readwrite');
                 var store = tx.objectStore('restaurants');

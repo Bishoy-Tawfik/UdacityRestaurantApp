@@ -6,7 +6,7 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#fdfdfd" />
     <link rel="shortcut icon" href="/img/icons/main-icon.png">
-    <meta name="viewport" content="width-device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Normalize.css for better cross-browser consistency -->
     <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
     <!-- Main CSS file -->
@@ -14,6 +14,11 @@
     <link rel="stylesheet" media='screen and (max-width: 450px)' href="css/styles-small.css">
     <link rel="stylesheet" media='screen and (min-width: 451px) and (max-width: 800px)' href="css/styles-med.css">
     <title>Add review</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var value = getParameterByName('id');
+       document.getElementById('txtRestaurantID').value =value;
+}, false);</script>
 </head>
 
 <body class="inside">
@@ -40,7 +45,7 @@
             <h2>Your user name:</h2>
             <input type="text" aria-label="Your user name" id="txtUserName" />
             <h2>Restaurant ID:</h2>
-            <input type="number" aria-label="Restaurant ID" id="txtRestaurantID" />
+            <input type="number" aria-label="Restaurant ID" disabled id="txtRestaurantID" />
             <h2>Rating:</h2>
             <input type="number" aria-label="Rating" id="txtRating" />
             <h2>Comment:</h2>
@@ -82,7 +87,8 @@
                             restaurant_id: restaurantID,
                             name: userName,
                             rating: ratingVal,
-                            comments: comment
+                            comments: comment,
+                            createdAt:new Date().toLocaleString()
                         }
                         let keyToInsert = restaurantID + userName + ratingVal;
                         idbKeyval.set(keyToInsert, reviewObj);
@@ -110,6 +116,19 @@
                     });
                 });
         }
+
+    function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+
+
+
+}
     </script>
 </body>
 

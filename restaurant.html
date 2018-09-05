@@ -6,13 +6,14 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#fdfdfd" />
     <link rel="shortcut icon" href="/img/icons/main-icon.png">
-    <meta name="viewport" content="width-device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Normalize.css for better cross-browser consistency -->
     <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
     <!-- Main CSS file -->
     <link rel="stylesheet" href="css/styles.css" type="text/css">
     <link rel="stylesheet" media='screen and (max-width: 450px)' href="css/styles-small.css">
     <link rel="stylesheet" media='screen and (min-width: 451px) and (max-width: 800px)' href="css/styles-med.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.15.2/URI.min.js"></script>
     <title>Restaurant Info</title>
 </head>
 
@@ -26,7 +27,7 @@
             <!-- Beginning breadcrumb -->
             <ul id="breadcrumb" aria-label="breadcrumb">
                 <li><a tabindex="1" href="/">Home</a></li>
-                <li><a tabindex="1" href="/review.html">Add review</a></li>
+                <li><a id="dynamicLink" href="/review.html?id=">Add review</a></li>
             </ul>
             <!-- End breadcrumb -->
             <!-- End nav -->
@@ -86,6 +87,23 @@
                 console.log('Service Worker Ready');
             });
         }
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+var idVal = getParameterByName('id')
+var l = document.getElementById('dynamicLink');
+var uri = URI(l.href);
+var qs = uri.query(true);
+qs.id = idVal
+uri.query(qs);
+l.href = uri;
     </script>
 </body>
 

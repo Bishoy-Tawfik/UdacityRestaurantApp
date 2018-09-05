@@ -185,7 +185,7 @@ createRestaurantHTML = (restaurant) => {
     isFavToggle.setAttribute('aria-label', 'Is your favorite');
     isFavToggle.setAttribute('class', 'switch');
     if (restaurant.is_favorite == "true") {
-        isFavToggle.innerHTML = '<input type="checkbox" aria-label="Is your favorite" checked="true" onclick="changeFavorite(this.checked)"><span  class="slider round"></span></label>';
+        isFavToggle.innerHTML = '<input type="checkbox" aria-label="Is your favorite" checked="true" onclick="changeFavorite(this.checked,' + restaurant.id + ')"><span  class="slider round"></span></label>';
     } else {
         isFavToggle.innerHTML = '<input type="checkbox" aria-label="Is your favorite"  onclick="changeFavorite(this.checked,' + restaurant.id + ')"><span class="slider round"></span></label>';
     }
@@ -215,6 +215,20 @@ function changeFavorite(checked, restaurantId) {
         },
     }).then(res => {
         console.log('Is favorite was updated correctly!');
+        idb.open('restaurantsDB').then(function(db) {
+            var tx = db.transaction('restaurants', 'readwrite');
+            var store = tx.objectStore('restaurants');
+            return store.get('restaurants');
+        }).then(function(val) {
+            objIndex = val.findIndex((obj => obj.id == restaurantId));
+            val[objIndex].is_favorite=checked.toString();
+            idb.open('restaurantsDB').then(function(db) {
+                var tx = db.transaction('restaurants', 'readwrite');
+                var store = tx.objectStore('restaurants');
+                //store.delete('reviews');
+                store.put(val, 'restaurants');
+            });
+        });
     }).catch(err => {
         console.log('Is favorite failed to be updated!');
     })

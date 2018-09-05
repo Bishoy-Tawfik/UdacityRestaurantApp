@@ -1,1 +1,50 @@
-@charset "utf-8";body,h1,h2,h3,h4,h5,h6,li,p,td,th,ul{font-family:Arial,Helvetica,sans-serif}body,li,p,td,th,ul{font-size:10pt;color:#333}#footer,#restaurant-cuisine,#restaurants-list,nav{text-align:center}#footer,nav h1 a{color:#fff;text-transform:uppercase}#breadcrumb li a,a,a:focus,a:hover{text-decoration:none}#map,nav{width:100%}body,p,td,th{line-height:1.5}body{background-color:#fdfdfd;margin:0;position:relative}a{color:#fff}a:focus,a:hover{color:#3397db}a img{border:0 #000}h1,h2,h3,h4,h5,h6{margin:0 0 20px}article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}#maincontent{background-color:#f3f3f3;min-height:100%}#footer{background-color:#444;font-size:8pt;letter-spacing:1px;padding:25px 0}nav{background-color:#252831}nav h1{margin:auto}nav h1 a{font-size:14pt;font-weight:200;letter-spacing:10px}#breadcrumb{padding:10px 40px 16px;list-style:none;background-color:#eee;font-size:17px;margin:0}#breadcrumb li{display:inline}#breadcrumb li+li:before{padding:8px;color:#000;content:"/\00a0"}#breadcrumb li a{color:#000}#breadcrumb li a:hover{color:#000;text-decoration:underline}#map{height:400px;background-color:#ccc}.filter-options{width:100%;height:auto;background-color:#3397DB;align-items:center}#restaurants-list li,.filter-options select{background-color:#fff;font-family:Arial,sans-serif}.filter-options h2{color:#000;font-size:1rem;font-weight:400;line-height:2;margin:0 20px}#restaurant-name,#restaurants-list li h1{font-family:Arial,sans-serif;font-weight:200;text-transform:uppercase}.filter-options select{border:1px solid #fff;font-size:11pt;height:35px;letter-spacing:0;margin:10px;padding:0 10px;width:200px}#restaurants-list{background-color:#f3f3f3;list-style:none;margin:0;padding:30px 15px 60px;display:flex;flex-wrap:wrap}#restaurants-list li{border:2px solid #ccc;margin:15px;min-height:380px;padding:0 30px 25px;text-align:left;width:270px}#restaurants-list .restaurant-img{background-color:#ccc;display:block;margin:0;max-width:100%;min-height:248px;min-width:100%}#restaurants-list li h1{color:#000;font-size:14pt;letter-spacing:0;line-height:1.3;margin:20px 0 10px}#restaurants-list p{margin:0;font-size:11pt}#restaurants-list li a{background-color:orange;border-bottom:3px solid #eee;color:#000;display:inline-block;font-size:10pt;margin:15px 0 0;padding:8px 30px 10px;text-align:center;text-decoration:none;text-transform:uppercase}.inside header{position:fixed;top:0;width:100%;z-index:1000}.inside #map-container{background:#666;height:87%;position:fixed;right:0;top:80px;width:40%}.inside #map{background-color:#ccc;height:100%;width:100%}.inside #footer{bottom:0;position:absolute;width:100%}#restaurant-name{color:#000;font-size:20pt;letter-spacing:0;margin:15px 0 30px;line-height:1.1}#restaurant-img{width:85%}#restaurant-address{font-size:12pt;margin:10px 0}#restaurant-cuisine{background-color:#333;color:#ddd;font-size:12pt;font-weight:300;letter-spacing:10px;margin:0 0 20px;padding:2px 0;text-transform:uppercase;width:85%}#restaurant-container,#reviews-container{border-bottom:1px solid #d9d9d9;border-top:1px solid #fff;padding:140px 50px 30px;width:50%}#add-review-container{border-bottom:1px solid #d9d9d9;border-top:1px solid #fff;padding:120px 50px 150px;width:100%;height:100%}#reviews-container{padding:30px 40px 80px}#reviews-container h2{color:#000;font-size:24pt;font-weight:300;letter-spacing:-1px;padding-bottom:1pt}#reviews-list{margin:0;padding:0}#reviews-list li{background-color:#fff;border:2px solid #f3f3f3;display:block;list-style-type:none;margin:0 0 30px;overflow:hidden;padding:0 5px 20px;position:relative;width:100%}#reviews-list li p{margin:5px 8px 10px}#restaurant-hours td{color:#666}.switch{position:relative;display:inline-block;width:60px;height:34px}.switch input{display:none}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;-webkit-transition:.4s;transition:.4s}.slider:before{position:absolute;content:"";height:26px;width:26px;left:4px;bottom:4px;background-color:#fff;-webkit-transition:.4s;transition:.4s}input:checked+.slider{background-color:#2196F3}input:focus+.slider{box-shadow:0 0 1px #2196F3}input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:translateX(26px);transform:translateX(26px)}.slider.round{border-radius:34px}.slider.round:before{border-radius:50%}
+@charset "utf-8";body,h1,h2,h3,h4,h5,h6,li,p,td,th,ul{font-family:Arial,Helvetica,sans-serif}body,li,p,td,th,ul{font-size:10pt;color:#333}#footer,#restaurant-cuisine,#restaurants-list,nav{text-align:center}#footer,nav h1 a{color:#fff;text-transform:uppercase}#breadcrumb li a,a,a:focus,a:hover{text-decoration:none}#map,nav{width:100%}body,p,td,th{line-height:1.5}body{background-color:#fdfdfd;margin:0;position:relative}a{color:#fff}a:focus,a:hover{color:#3397db}a img{border:0 #000}h1,h2,h3,h4,h5,h6{margin:0 0 20px}article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}#maincontent{background-color:#f3f3f3;min-height:100%}#footer{background-color:#444;font-size:8pt;letter-spacing:1px;padding:25px 0}nav{background-color:#252831}nav h1{margin:auto}nav h1 a{font-size:14pt;font-weight:200;letter-spacing:10px}#breadcrumb{padding:10px 40px 16px;list-style:none;background-color:#eee;font-size:17px;margin:0}#breadcrumb li{display:inline}#breadcrumb li+li:before{padding:8px;color:#000;content:"/\00a0"}#breadcrumb li a{color:#000}#breadcrumb li a:hover{color:#000;text-decoration:underline}#map{height:400px;background-color:#ccc}.filter-options{width:100%;height:auto;background-color:#3397DB;align-items:center}#restaurants-list li,.filter-options select{background-color:#fff;font-family:Arial,sans-serif}.filter-options h2{color:#000;font-size:1rem;font-weight:400;line-height:2;margin:0 20px}#restaurant-name,#restaurants-list li h1{font-family:Arial,sans-serif;font-weight:200;text-transform:uppercase}.filter-options select{border:1px solid #fff;font-size:11pt;height:35px;letter-spacing:0;margin:10px;padding:0 10px;width:200px}#restaurants-list{background-color:#f3f3f3;list-style:none;margin:0;padding:30px 15px 60px;display:flex;flex-wrap:wrap}#restaurants-list li{border:2px solid #ccc;margin:15px;min-height:380px;padding:0 30px 25px;text-align:left;width:270px}#restaurants-list .restaurant-img{background-color:#ccc;display:block;margin:0;max-width:100%;min-height:248px;min-width:100%}#restaurants-list li h1{color:#000;font-size:14pt;letter-spacing:0;line-height:1.3;margin:20px 0 10px}#restaurants-list p{margin:0;font-size:11pt}#restaurants-list li a{background-color:orange;border-bottom:3px solid #eee;color:#000;display:inline-block;font-size:10pt;margin:15px 0 0;padding:8px 30px 10px;text-align:center;text-decoration:none;text-transform:uppercase}.inside header{position:fixed;top:0;width:100%;z-index:1000}.inside #map-container{background:#666;height:87%;position:fixed;right:0;top:80px;width:40%}.inside #map{background-color:#ccc;height:100%;width:100%}.inside #footer{bottom:0;position:absolute;width:100%}#restaurant-name{color:#000;font-size:20pt;letter-spacing:0;margin:15px 0 30px;line-height:1.1}#restaurant-img{width:85%}#restaurant-address{font-size:12pt;margin:10px 0}#restaurant-cuisine{background-color:#333;color:#ddd;font-size:12pt;font-weight:300;letter-spacing:10px;margin:0 0 20px;padding:2px 0;text-transform:uppercase;width:85%}#restaurant-container,#reviews-container{border-bottom:1px solid #d9d9d9;border-top:1px solid #fff;padding:140px 50px 30px;width:50%}#add-review-container{border-bottom:1px solid #d9d9d9;border-top:1px solid #fff;padding:120px 50px 150px;width:100%;height:100%}#reviews-container{padding:30px 40px 80px}#reviews-container h2{color:#000;font-size:24pt;font-weight:300;letter-spacing:-1px;padding-bottom:1pt}#reviews-list{margin:0;padding:0}#reviews-list li{background-color:#fff;border:2px solid #f3f3f3;display:block;list-style-type:none;margin:0 0 30px;overflow:hidden;padding:0 5px 20px;position:relative;width:100%}#reviews-list li p{margin:5px 8px 10px}#restaurant-hours td{color:#666}.switch{position:relative;display:inline-block;width:60px;height:34px}.switch input{display:none}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;-webkit-transition:.4s;transition:.4s}.slider:before{position:absolute;content:"";height:26px;width:26px;left:4px;bottom:4px;background-color:#fff;-webkit-transition:.4s;transition:.4s}input:checked+.slider{background-color:#2196F3}input:focus+.slider{box-shadow:0 0 1px #2196F3}input:checked+.slider:before{-webkit-transform:translateX(26px);-ms-transform:translateX(26px);transform:translateX(26px)}.slider.round{border-radius:34px}.slider.round:before{border-radius:50%}/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+.AddReviewBtn {
+    background-color: orange;
+    border-bottom: 3px solid #eee;
+    color: #000;
+    display: inline-block;
+    font-size: 10pt;
+    margin: 15px 0 0;
+    padding: 8px 30px 10px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase
+}

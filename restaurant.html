@@ -13,7 +13,11 @@
     <link rel="stylesheet" href="css/styles.css" type="text/css">
     <link rel="stylesheet" media='screen and (max-width: 450px)' href="css/styles-small.css">
     <link rel="stylesheet" media='screen and (min-width: 451px) and (max-width: 800px)' href="css/styles-med.css">
-    <script src="js/URI.min.js" async></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/idb-keyval@3/dist/idb-keyval-iife.min.js" async></script>
+    <script src="./node_modules/idb/lib/idb.js" async></script>
+
     <title>Restaurant Info</title>
 </head>
 
@@ -27,7 +31,6 @@
             <!-- Beginning breadcrumb -->
             <ul id="breadcrumb" aria-label="breadcrumb">
                 <li><a tabindex="1" href="/">Home</a></li>
-                <li><a id="dynamicLink" href="/review.html?id=">Add review</a></li>
             </ul>
             <!-- End breadcrumb -->
             <!-- End nav -->
@@ -41,7 +44,6 @@
 
         <section id="map-container">
             <h1 id="viewMap" style="color: white;" onclick="swap_map()">Click Here to view the map</h1>
-            <!-- <img id="static_map" onclick="swap_map()" src="https://maps.googleapis.com/maps/api/staticmap?center=33.29939,-84.55608&zoom=14&size=500x300&format=jpg&maptype=roadmap  &markers=color:red%7Clabel:S%7C33.29939,-84.55608&key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4"></img> -->
             <div id="map" role="application" style="display: none" aria-label="map"></div>
         </section>
         <!-- End map -->
@@ -52,6 +54,28 @@
             <p tabindex="3" id="restaurant-cuisine"></p>
             <p tabindex="4" id="restaurant-address"></p>
             <table tabindex="5" id="restaurant-hours"></table>
+            <a id="myBtn" class="AddReviewBtn" >Add Review</a>
+
+            <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+       <!-- Modal content -->
+        <div class="modal-content">
+             <span class="close">&times;</span>
+             <h2>Your user name:</h2>
+             <input type="text" aria-label="Your user name" id="txtUserName" />
+             <h2>Restaurant ID:</h2>
+             <input type="number" aria-label="Restaurant ID" disabled id="txtRestaurantID" />
+             <h2>Rating:</h2>
+             <input type="number" aria-label="Rating" id="txtRating" />
+             <h2>Comment:</h2>
+             <textarea rows="4" id="txtComment" aria-label="Comment" cols="30">
+             </textarea>
+             <button type="submit" class='AddReviewBtn' id="btnAddReview">Submit</button>
+             </div>
+  
+         </div>
+
         </section>
 
         <!-- end restaurant -->
@@ -78,6 +102,35 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4&libraries=places&callback=initMap"></script>
     <!-- End scripts -->
     <script>
+        // Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+    var value = getParameterByName('id');
+       document.getElementById('txtRestaurantID').value =value;
+    modal.style.display = "block";
+    
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
         const swap_map = () => {
             if (document.getElementById('map').style.display === 'none') {
                 document.getElementById('map').style.display = 'block';
@@ -89,7 +142,45 @@
                     scope: '/'
                 })
                 .then(function(registration) {
-                    console.log('Service Worker Registered');
+                    var submitButton = document.getElementById('btnAddReview');
+                    submitButton.addEventListener('click', () => {
+                        var userName = document.getElementById('txtUserName').value;
+                        var restaurantID = document.getElementById('txtRestaurantID').value;
+                        var ratingVal = document.getElementById('txtRating').value;
+                        var comment = document.getElementById('txtComment').value;
+                        let reviewObj = {
+                            restaurant_id: restaurantID,
+                            name: userName,
+                            rating: ratingVal,
+                            comments: comment,
+                            createdAt:new Date().toLocaleString()
+                        }
+                        let keyToInsert = restaurantID + userName + ratingVal;
+                        idbKeyval.set(keyToInsert, reviewObj);
+
+                        idb.open('reviewsDB').then(function(db) {
+                            var tx = db.transaction('reviews', 'readwrite');
+                            var store = tx.objectStore('reviews');
+                            return store.get('reviews');
+                        }).then(function(val) {
+                            val.push(reviewObj);
+                            idb.open('reviewsDB').then(function(db) {
+                                var tx = db.transaction('reviews', 'readwrite');
+                                var store = tx.objectStore('reviews');
+                                store.delete('reviews');
+                                store.put(val, 'reviews');
+                            });
+                            registration.sync.register('add-review').then(() => {
+                                console.log('Sync registered');
+                                console.log('Service Worker Registered');
+                            });
+                        });
+                        modal.style.display = "none";
+                        document.location.reload()
+                    });
+                    navigator.serviceWorker.ready.then(function(registration) {
+                        console.log('Service Worker Ready');
+                    });
                 })
 
             navigator.serviceWorker.ready.then(function(registration) {
@@ -106,13 +197,6 @@
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
-        var idVal = getParameterByName('id')
-        var l = document.getElementById('dynamicLink');
-        var uri = URI(l.href);
-        var qs = uri.query(true);
-        qs.id = idVal
-        uri.query(qs);
-        l.href = uri;
     </script>
 </body>
 

@@ -231,7 +231,11 @@ function changeFavorite(checked, restaurantId) {
                 store.put(val, 'restaurants');
                 caches.open(cacheName).then(function(cache) {
                     cache.delete('restaurants').then(function(response) {
-                    cache.put('restaurants', val);
+                        console.log('restaurants is deleted!');
+                        return cache;
+                    }).then(function(cache) {
+                        var res = new Response(JSON.stringify(val), { "status": 200, "statusText": "MyCustomResponse!" });
+                        cache.put('restaurants', res);
                     });
                 });
             });

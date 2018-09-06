@@ -46,7 +46,7 @@ const cacheName = `v1`;
 self.addEventListener('install', e => {
 
     fetch('http://localhost:1337/restaurants').then(function(response) {
-        var res =response.clone();
+        var res = response.clone();
         caches.open(cacheName).then(function(cache) {
             cache.put('restaurants', res);
         });
@@ -56,7 +56,7 @@ self.addEventListener('install', e => {
             if (!upgradeDb.objectStoreNames.contains('restaurants')) {
                 var restaurantsOS = upgradeDb.createObjectStore('restaurants');
                 restaurantsOS.put(data, 'restaurants');
-                
+
             }
         });
     }).catch(function(error) {
@@ -64,7 +64,7 @@ self.addEventListener('install', e => {
     });
 
     fetch('http://localhost:1337/reviews').then(function(response) {
-        var res =response.clone();
+        var res = response.clone();
         caches.open(cacheName).then(function(cache) {
             cache.put('reviews', res);
         });
@@ -74,7 +74,7 @@ self.addEventListener('install', e => {
             if (!upgradeDb.objectStoreNames.contains('reviews')) {
                 var reviewsOS = upgradeDb.createObjectStore('reviews');
                 reviewsOS.put(data, 'reviews');
-                
+
 
             }
         });
@@ -129,13 +129,13 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', function(event) {
     event.respondWith(
-      caches.open(cacheName).then(function(cache) {
-        return cache.match(event.request).then(function (response) {
-          return response || fetch(event.request).then(function(response) {
-            cache.put(event.request, response.clone());
-            return response;
-          });
-        });
-      })
+        caches.open(cacheName).then(function(cache) {
+            return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
+                return response || fetch(event.request).then(function(response) {
+                    cache.put(event.request, response.clone());
+                    return response;
+                });
+            });
+        })
     );
-  });
+});

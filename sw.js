@@ -86,7 +86,6 @@ self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(cacheName).then(cache => {
             return cache.addAll([
-                    `/`,
                     `/index.html`,
                     `/manifest.json`,
                     `/restaurant.html`,
@@ -108,7 +107,8 @@ self.addEventListener('install', e => {
                     `/img/8.webp`,
                     `/img/9.webp`,
                     `/img/10.webp`,
-                    `/img/placeholder-image.jpg`
+                    `/img/placeholder-image.jpg`,
+                    `/js/jquery-1.10.2.js`
                 ])
                 .then(() => self.skipWaiting());
         })
@@ -132,9 +132,17 @@ self.addEventListener('fetch', function(event) {
         caches.open(cacheName).then(function(cache) {
             return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
                 return response || fetch(event.request).then(function(response) {
-                    cache.add(event.request, response.clone());
+                    if(event.request.method=="GET"){
+                    cache.add(event.request, response.clone()).catch(function(){
+                        console.log('Could not cache '+event.request);
+                    });
+                    }
                     return response;
+                }).catch(function(err){
+                    console.log('offline!');
                 });
+            }).catch(function(err){
+                console.log('offline!');
             });
         })
     );

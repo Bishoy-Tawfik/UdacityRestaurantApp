@@ -15,8 +15,7 @@
     <link rel="stylesheet" media='screen and (min-width: 451px) and (max-width: 800px)' href="css/styles-med.css">
 
 
-    <script src="https://cdn.jsdelivr.net/npm/idb-keyval@3/dist/idb-keyval-iife.min.js" async></script>
-    <script src="./node_modules/idb/lib/idb.js" async></script>
+    <script src="./node_modules/idb-keyval/dist/idb-keyval-iife.min.js" async></script>
 
     <title>Restaurant Info</title>
 </head>
@@ -157,75 +156,31 @@
                             createdAt: new Date().toLocaleString()
                         }
                         let keyToInsert = restaurantID + userName + ratingVal;
-                        idbKeyval.set(keyToInsert, reviewObj).then(function() {
-                            caches.open(cacheName).then(function(cache) {
-                                cache.match('http://localhost:1337/reviews', {
-                                    ignoreSearch: true,
-                                    ignoreVary: true
-                                }).then(function(response) {
-                                    if (response) {
-                                        return response.json();
-                                    } else {
-                                        return response;
-                                    }
-                                }).then(function(val) {
-                                    if (val) {
-                                        const newVal = val.push(reviewObj);
-                                        console.log(val);
-                                        caches.open('v1').then(function(cache) {
+                        idbKeyval.set(keyToInsert, reviewObj);
+
+                            caches.open('v1').then(function(cache) {
                                             cache.delete('http://localhost:1337/reviews').then(function(response) {
                                                 console.log('restaurants is deleted!');
-                                            }).then(function() {
-                                                // var res = new Response(JSON.stringify(newVal), {
-                                                //     "status": 200,
-                                                //     "statusText": "MyCustomResponse!"
-                                                // });
-                                                // caches.open('v1').then(function(newCache) {
-                                                //     console.log(JSON.stringify(val));
-                                                //     // res.json().then(function(newVal) {
-                                                //     //     console.log(newVal)
-                                                //     // });
-                                                //     newCache.add('http://localhost:1337/reviews', res.clone())
-                                                //         .then(function() {
-                                                //             registration.sync.register('add-review').then(() => {
-                                                //                 console.log('Sync registered');
-                                                //                 console.log('Service Worker Registered');
-                                                //             }).then(function() {
-                                                //                 modal.style.display = "none";
-                                                //                 //document.location.reload()
-                                                //                 window.location.reload(true);
-                                                //             })
-
-                                                //         });
-                                                // });
                                                 registration.sync.register('add-review').then(() => {
                                                     console.log('Sync registered');
                                                     console.log('Service Worker Registered');
                                                 }).then(function() {
                                                     modal.style.display = "none";
-                                                    window.location.reload(true);
+                                                    document.location.reload()
                                                 })
+                                            }).catch(function(){
+                                                registration.sync.register('add-review').then(() => {
+                                                    console.log('Sync registered');
+                                                    console.log('Service Worker Registered');
+                                                }).then(function() {
+                                                    modal.style.display = "none";
+                                                    document.location.reload()
+                                                })
+                                            })
+                                                
                                             });
                                         });
-                                    } else {
-                                        registration.sync.register('add-review').then(() => {
-                                            console.log('Sync registered');
-                                            console.log('Service Worker Registered');
-                                        }).then(function() {
-                                            modal.style.display = "none";
-                                            window.location.reload(true);
-                                        });
-
-                                    }
-                                });
-
-                            });
-                        })
-
                     });
-
-                });
-
             navigator.serviceWorker.ready.then(function(registration) {
                 console.log('Service Worker Ready');
             });

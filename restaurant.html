@@ -102,6 +102,7 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4&libraries=places&callback=initMap"></script>
     <!-- End scripts -->
     <script>
+        const cacheName = `v1`;
         // Get the modal
 var modal = document.getElementById('myModal');
 
@@ -169,6 +170,11 @@ window.onclick = function(event) {
                                 var store = tx.objectStore('reviews');
                                 store.delete('reviews');
                                 store.put(val, 'reviews');
+                                caches.open(cacheName).then(function(cache) {
+                                    cache.delete('reviews').then(function(response) {
+                                    cache.put('reviews', val);
+                                    });
+                                });
                             });
                             registration.sync.register('add-review').then(() => {
                                 console.log('Sync registered');

@@ -209,6 +209,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 }
 
 function changeFavorite(checked, restaurantId) {
+    const cacheName = `v1`;
     fetch('http://localhost:1337/restaurants/' + restaurantId + '/?is_favorite=' + checked, {
         method: 'PUT',
         headers: {
@@ -228,6 +229,11 @@ function changeFavorite(checked, restaurantId) {
                 var store = tx.objectStore('restaurants');
                 //store.delete('reviews');
                 store.put(val, 'restaurants');
+                caches.open(cacheName).then(function(cache) {
+                    cache.delete('restaurants').then(function(response) {
+                    cache.put('restaurants', val);
+                    });
+                });
             });
         });
     }).catch(err => {

@@ -48,7 +48,7 @@ self.addEventListener('install', e => {
     fetch('http://localhost:1337/restaurants').then(function(response) {
         var res = response.clone();
         caches.open(cacheName).then(function(cache) {
-            cache.put('restaurants', res);
+            cache.add('http://localhost:1337/restaurants', res);
         });
         return response.json();
     }).then(function(data) {
@@ -66,7 +66,7 @@ self.addEventListener('install', e => {
     fetch('http://localhost:1337/reviews').then(function(response) {
         var res = response.clone();
         caches.open(cacheName).then(function(cache) {
-            cache.put('reviews', res);
+            cache.add('http://localhost:1337/reviews', res);
         });
         return response.json();
     }).then(function(data) {
@@ -132,7 +132,7 @@ self.addEventListener('fetch', function(event) {
         caches.open(cacheName).then(function(cache) {
             return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
                 return response || fetch(event.request).then(function(response) {
-                    cache.put(event.request, response.clone());
+                    cache.add(event.request, response.clone());
                     return response;
                 });
             });

@@ -157,44 +157,74 @@
                             createdAt: new Date().toLocaleString()
                         }
                         let keyToInsert = restaurantID + userName + ratingVal;
-                        idbKeyval.set(keyToInsert, reviewObj);
+                        idbKeyval.set(keyToInsert, reviewObj).then(function() {
+                            caches.open(cacheName).then(function(cache) {
+                                cache.match('http://localhost:1337/reviews', {
+                                    ignoreSearch: true,
+                                    ignoreVary: true
+                                }).then(function(response) {
+                                    if (response) {
+                                        return response.json();
+                                    } else {
+                                        return response;
+                                    }
+                                }).then(function(val) {
+                                    if (val) {
+                                        const newVal = val.push(reviewObj);
+                                        console.log(val);
+                                        caches.open('v1').then(function(cache) {
+                                            cache.delete('http://localhost:1337/reviews').then(function(response) {
+                                                console.log('restaurants is deleted!');
+                                            }).then(function() {
+                                                // var res = new Response(JSON.stringify(newVal), {
+                                                //     "status": 200,
+                                                //     "statusText": "MyCustomResponse!"
+                                                // });
+                                                // caches.open('v1').then(function(newCache) {
+                                                //     console.log(JSON.stringify(val));
+                                                //     // res.json().then(function(newVal) {
+                                                //     //     console.log(newVal)
+                                                //     // });
+                                                //     newCache.add('http://localhost:1337/reviews', res.clone())
+                                                //         .then(function() {
+                                                //             registration.sync.register('add-review').then(() => {
+                                                //                 console.log('Sync registered');
+                                                //                 console.log('Service Worker Registered');
+                                                //             }).then(function() {
+                                                //                 modal.style.display = "none";
+                                                //                 //document.location.reload()
+                                                //                 window.location.reload(true);
+                                                //             })
 
-                        idb.open('reviewsDB').then(function(db) {
-                            var tx = db.transaction('reviews', 'readwrite');
-                            var store = tx.objectStore('reviews');
-                            return store.get('reviews');
-                        }).then(function(val) {
-                            val.push(reviewObj);
-                            idb.open('reviewsDB').then(function(db) {
-                                var tx = db.transaction('reviews', 'readwrite');
-                                var store = tx.objectStore('reviews');
-                                store.delete('reviews');
-                                store.put(val, 'reviews');
-                                caches.open(cacheName).then(function(cache) {
-                                    cache.delete('reviews').then(function(response) {
-                                        console.log('restaurants is deleted!');
-                                        return cache;
-                                    }).then(function(cache) {
-                                        var res = new Response(JSON.stringify(val), {
-                                            "status": 200,
-                                            "statusText": "MyCustomResponse!"
+                                                //         });
+                                                // });
+                                                registration.sync.register('add-review').then(() => {
+                                                    console.log('Sync registered');
+                                                    console.log('Service Worker Registered');
+                                                }).then(function() {
+                                                    modal.style.display = "none";
+                                                    window.location.reload(true);
+                                                })
+                                            });
                                         });
-                                        cache.put('reviews', res)
-                                    });
+                                    } else {
+                                        registration.sync.register('add-review').then(() => {
+                                            console.log('Sync registered');
+                                            console.log('Service Worker Registered');
+                                        }).then(function() {
+                                            modal.style.display = "none";
+                                            window.location.reload(true);
+                                        });
+
+                                    }
                                 });
+
                             });
-                            registration.sync.register('add-review').then(() => {
-                                console.log('Sync registered');
-                                console.log('Service Worker Registered');
-                            });
-                        });
-                        modal.style.display = "none";
-                        document.location.reload()
+                        })
+
                     });
-                    navigator.serviceWorker.ready.then(function(registration) {
-                        console.log('Service Worker Ready');
-                    });
-                })
+
+                });
 
             navigator.serviceWorker.ready.then(function(registration) {
                 console.log('Service Worker Ready');

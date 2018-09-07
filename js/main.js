@@ -6,20 +6,6 @@ var markers = []
 
 
 /**
- * Register the service worker.
- */
-// if ('serviceWorker' in navigator) {
-//     navigator.serviceWorker.register('/sw.js', { scope: '/myfancyrestaurant/' })
-//         .then(function(reg) {
-//             // registration worked
-//             console.log('Registration succeeded. Scope is ' + reg.scope);
-//         }).catch(function(error) {
-//             // registration failed
-//             console.log('Registration failed with ' + error);
-//         });
-// }
-
-/**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -207,9 +193,10 @@ addMarkersToMap = (restaurants = self.restaurants) => {
         self.markers.push(marker);
     });
 }
+const cacheName = `v1`;
 
 function changeFavorite(checked, restaurantId) {
-    const cacheName = `v1`;
+
     fetch('http://localhost:1337/restaurants/' + restaurantId + '/?is_favorite=' + checked, {
         method: 'PUT',
         headers: {
@@ -217,31 +204,36 @@ function changeFavorite(checked, restaurantId) {
         },
     }).then(res => {
         console.log('Is favorite was updated correctly!');
-        idb.open('restaurantsDB').then(function(db) {
-            var tx = db.transaction('restaurants', 'readwrite');
-            var store = tx.objectStore('restaurants');
-            return store.get('restaurants');
-        }).then(function(val) {
-            objIndex = val.findIndex((obj => obj.id == restaurantId));
-            val[objIndex].is_favorite = checked.toString();
-            idb.open('restaurantsDB').then(function(db) {
-                var tx = db.transaction('restaurants', 'readwrite');
-                var store = tx.objectStore('restaurants');
-                //store.delete('reviews');
-                store.put(val, 'restaurants');
-                caches.open(cacheName).then(function(cache) {
-                    cache.delete('restaurants').then(function(response) {
-                        console.log('restaurants is deleted!');
-                        return cache;
-                    }).then(function(cache) {
-                        var res = new Response(JSON.stringify(val), { "status": 200, "statusText": "MyCustomResponse!" });
-                        cache.put('restaurants', res);
-                    });
+        caches.open(cacheName).then(function(cache) {
+            cache.delete('restaurants').then(function(response) {
+                console.log('restaurants is deleted!');
+            }).then(function() {
+                setTimeout(function() {
+                    update(new Request('http://localhost:1337/restaurants')), 2000
                 });
-            });
+            })
         });
+
+
     }).catch(err => {
-        console.log('Is favorite failed to be updated!');
+        console.log('Is favorite failed to be updated, no worries it will be synced later!');
+        let changeFavorite = {
+            restaurant_id: restaurantId,
+            checked: checked
+        }
+        let keyToInsert = restaurantId + checked;
+        idbKeyval.set(keyToInsert, changeFavorite);
     })
 
+}
+
+function update(request) {
+    return caches.open(cacheName).then(function(cache) {
+        return fetch(request).then(function(response) {
+            return cache.put(request, response.clone()).then(function() {
+                console.log(response);
+                return response;
+            });
+        });
+    });
 }

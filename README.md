@@ -31,4 +31,6 @@ First time you run the application make sure that you have have the server side 
 You could simply start the application through the command npm start, the application uses express to start a
 server on the port 8000
 
+You could mark a restaurant as your favorite by switching the toggle of the restaurant on the home page.
+Also you could view a restaurant by clicking add review.
 

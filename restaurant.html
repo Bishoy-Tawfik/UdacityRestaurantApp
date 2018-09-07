@@ -94,6 +94,7 @@
 
     <!-- Beginning scripts -->
     <!-- Database helpers -->
+    <script type="application/javascript" charset="utf-8" src="js/shared.js"></script>
     <script type="text/javascript" src="js/dbhelper.js"></script>
     <!-- Main javascript file -->
     <script type="text/javascript" src="js/restaurant_info.js"></script>
@@ -101,6 +102,18 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4&libraries=places&callback=initMap"></script>
     <!-- End scripts -->
     <script>
+        window.addEventListener('load', function() {
+
+            function updateOnlineStatus(event) {
+                var condition = navigator.onLine ? "online" : "offline";
+                if (condition == "online") {
+                    syncData();
+                }
+            }
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        });
+
         const cacheName = `v1`;
         // Get the modal
         var modal = document.getElementById('myModal');
@@ -155,32 +168,37 @@
                             comments: comment,
                             createdAt: new Date().toLocaleString()
                         }
-                        let keyToInsert = restaurantID + userName + ratingVal;
-                        idbKeyval.set(keyToInsert, reviewObj);
 
-                            caches.open('v1').then(function(cache) {
-                                            cache.delete('http://localhost:1337/reviews').then(function(response) {
-                                                console.log('restaurants is deleted!');
-                                                registration.sync.register('add-review').then(() => {
-                                                    console.log('Sync registered');
-                                                    console.log('Service Worker Registered');
-                                                }).then(function() {
-                                                    modal.style.display = "none";
-                                                    document.location.reload()
-                                                })
-                                            }).catch(function(){
-                                                registration.sync.register('add-review').then(() => {
-                                                    console.log('Sync registered');
-                                                    console.log('Service Worker Registered');
-                                                }).then(function() {
-                                                    modal.style.display = "none";
-                                                    document.location.reload()
-                                                })
-                                            })
-                                                
-                                            });
-                                        });
+
+                        var querystring = '?restaurant_id=' + reviewObj.restaurant_id + '&name=' + reviewObj.name + '&rating=' + reviewObj.rating + '&comments=' + reviewObj.comments;
+                        console.log(querystring);
+                        fetch('http://localhost:1337/reviews/' + querystring, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                        }).then(res => {
+                            console.log('The comment was submitted correctly!');
+                            const cacheName = `v1`;
+                            caches.open(cacheName).then(function(cache) {
+                                cache.delete('reviews').then(function(response) {
+                                    console.log('reviews is deleted!');
+                                }).then(function() {
+                                    modal.style.display = "none";
+                                    document.location.reload()
+                                })
+                            });
+
+                        }).catch(function(err) {
+                            console.log('Is favorite failed to be updated, no worries it will be synced later!');
+                            let keyToInsert = restaurantID + userName + ratingVal;
+                            idbKeyval.set(keyToInsert, reviewObj).then(function() {
+                                modal.style.display = "none";
+                                document.location.reload()
+                            });
+                        });
                     });
+                });
             navigator.serviceWorker.ready.then(function(registration) {
                 console.log('Service Worker Ready');
             });

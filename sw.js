@@ -1,46 +1,3 @@
-if (typeof idb === "undefined") {
-    self.importScripts('./node_modules/idb/lib/idb.js');
-}
-if (typeof idbKeyval === "undefined") {
-    self.importScripts('./node_modules/idb-keyval/dist/idb-keyval-iife.min.js');
-}
-
-
-function SyncReviews() {
-    //Check if the server is online:
-    fetch('http://localhost:1337/restaurants/?is_favorite=true').then(function(response) {
-        return response;
-    }).then(function(text) {
-        console.log('Request successful', text);
-    }).catch(function(error) {
-        console.log('Request failed', error);
-    });
-
-    idbKeyval.keys().then(keys => {
-        keys.forEach(element => {
-            idbKeyval.get(element).then(val => {
-                console.log(val);
-                var querystring = '?restaurant_id=' + val.restaurant_id + '&name=' + val.name + '&rating=' + val.rating + '&comments=' + val.comments;
-                console.log(querystring);
-                fetch('http://localhost:1337/reviews/' + querystring, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                }).then(res => {
-                    console.log('The comment was submitted correctly!');
-                    idbKeyval.del(element);
-                    return res;
-
-                }).catch(function(err) {
-                    return err;
-                });
-            });
-        });
-    });
-}
-
-
 const cacheName = `v1`;
 
 self.addEventListener('install', e => {
@@ -51,16 +8,8 @@ self.addEventListener('install', e => {
             cache.add('http://localhost:1337/restaurants', res);
         });
         return response.json();
-    }).then(function(data) {
-        var dbPromise = idb.open('restaurantsDB', 1, function(upgradeDb) {
-            if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-                var restaurantsOS = upgradeDb.createObjectStore('restaurants');
-                restaurantsOS.put(data, 'restaurants');
-
-            }
-        });
     }).catch(function(error) {
-        console.log('Request failed', error);
+        console.log('preloading restaurants has failed', error);
     });
 
     fetch('http://localhost:1337/reviews').then(function(response) {
@@ -69,17 +18,8 @@ self.addEventListener('install', e => {
             cache.add('http://localhost:1337/reviews', res);
         });
         return response.json();
-    }).then(function(data) {
-        var dbReviewsPromise = idb.open('reviewsDB', 1, function(upgradeDb) {
-            if (!upgradeDb.objectStoreNames.contains('reviews')) {
-                var reviewsOS = upgradeDb.createObjectStore('reviews');
-                reviewsOS.put(data, 'reviews');
-
-
-            }
-        });
     }).catch(function(error) {
-        console.log('Request failed', error);
+        console.log('preloading reviews has failed', error);
     });
 
     const timeStamp = Date.now();
@@ -92,6 +32,7 @@ self.addEventListener('install', e => {
                     `/js/main.js`,
                     `/js/restaurant_info.js`,
                     `/js/dbhelper.js`,
+                    `/js/shared.js`,
                     `/node_modules/idb/lib/idb.js`,
                     `/node_modules/idb-keyval/dist/idb-keyval-iife.min.js`,
                     `/css/styles.css`,
@@ -116,13 +57,6 @@ self.addEventListener('install', e => {
 });
 
 
-addEventListener('sync', function(event) {
-    if (event.tag === 'add-review') {
-        event.waitUntil(SyncReviews());
-
-    }
-});
-
 self.addEventListener('activate', event => {
     event.waitUntil(self.clients.claim());
 });
@@ -132,18 +66,29 @@ self.addEventListener('fetch', function(event) {
         caches.open(cacheName).then(function(cache) {
             return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
                 return response || fetch(event.request).then(function(response) {
-                    if(event.request.method=="GET"){
-                    cache.add(event.request, response.clone()).catch(function(){
-                        console.log('Could not cache '+event.request);
-                    });
+                    if (event.request.method == "GET") {
+                        cache.put(event.request, response.clone()).catch(function() {
+                            console.log('Could not cache ' + event.request);
+                        });
                     }
                     return response;
-                }).catch(function(err){
-                    console.log('offline!');
                 });
-            }).catch(function(err){
-                console.log('offline!');
             });
         })
+        // caches.open(cacheName).then(function(cache) {
+        //     return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
+        //         return response || fetch(event.request).then(function(response) {
+        //             if (event.request.method == "GET" && event.request.url) {
+        //                 cache.add(event.request, response.clone()).catch(function() {
+        //                     console.log('Could not cache ' + event.request);
+        //                 });
+        //             }
+        //         }).catch(function(err) {
+        //             console.log('offline!');
+        //         });
+        //     }).catch(function(err) {
+        //         console.log('offline!');
+        //     });
+        // })
     );
 });

@@ -17,16 +17,12 @@
     <header>
         <nav aria-label="Breadcrumb">
             <h1><a href="/">Restaurant Reviews</a></h1>
-            <!-- <ul id="breadcrumb" aria-label="breadcrumb">
-                <li><a href="/review.html">Add review</a></li>
-            </ul> -->
         </nav>
     </header>
 
     <main id="maincontent">
         <section id="map-container">
             <h1 id="viewMap" onclick="swap_map()">Click Here to view the map</h1>
-            <!-- <img id="static_map" onclick="swap_map()" src="https://maps.googleapis.com/maps/api/staticmap?center=33.29939,-84.55608&zoom=14&size=500x300&format=jpg&maptype=roadmap  &markers=color:red%7Clabel:S%7C33.29939,-84.55608&key=AIzaSyCPC0bD4S9P5J5L9HbAcKnyJ_a4YKfsSu4"></img> -->
             <div id="map" style="display: none" role="application"></div>
         </section>
         <section>
@@ -41,7 +37,10 @@
             </div>
             <ul id="restaurants-list"></ul>
         </section>
+
     </main>
+    <script src="./node_modules/idb-keyval/dist/idb-keyval-iife.min.js" async></script>
+    <script type="application/javascript" charset="utf-8" src="js/shared.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
     <script src="js/jquery-1.10.2.js"></script>
@@ -52,6 +51,18 @@
         Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
     </footer>
     <script>
+        window.addEventListener('load', function() {
+
+            function updateOnlineStatus(event) {
+                var condition = navigator.onLine ? "online" : "offline";
+                if (condition == "online") {
+                    syncData();
+                }
+            }
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        });
+
         $(window).load(function() {
             const lazyLoad = function() {
                 let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));

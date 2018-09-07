@@ -62,33 +62,57 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches.open(cacheName).then(function(cache) {
-            return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
-                return response || fetch(event.request).then(function(response) {
-                    if (event.request.method == "GET") {
-                        cache.put(event.request, response.clone()).catch(function() {
+    if (navigator.onLine == true) {
+        event.respondWith(
+            fetch(event.request).then(function(networkResponse) {
+                var newResp = networkResponse.clone();
+                if (event.request.method == "GET") {
+                    caches.open(cacheName).then(function(cache) {
+                        cache.put(event.request, newResp).catch(function() {
                             console.log('Could not cache ' + event.request);
                         });
-                    }
-                    return response;
+                    });
+                }
+                return networkResponse;
+            }).catch(err => {
+                caches.open(cacheName).then(function(cache) {
+                    return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
+                        return response
+                    });
+                })
+            })
+
+
+            // caches.open(cacheName).then(function(cache) {
+            //     return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
+            //         return response || fetch(event.request).then(function(response) {
+            //             if (event.request.method == "GET" && event.request.url) {
+            //                 cache.add(event.request, response.clone()).catch(function() {
+            //                     console.log('Could not cache ' + event.request);
+            //                 });
+            //             }
+            //         }).catch(function(err) {
+            //             console.log('offline!');
+            //         });
+            //     }).catch(function(err) {
+            //         console.log('offline!');
+            //     });
+            // })
+        );
+    } else {
+        event.respondWith(
+            caches.open(cacheName).then(function(cache) {
+                return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
+                    return response || fetch(event.request).then(function(response) {
+                        if (event.request.method == "GET") {
+                            cache.put(event.request, response.clone()).catch(function() {
+                                console.log('Could not cache ' + event.request);
+                            });
+                        }
+                        return response;
+                    });
                 });
-            });
-        })
-        // caches.open(cacheName).then(function(cache) {
-        //     return cache.match(event.request, { ignoreSearch: true }).then(function(response) {
-        //         return response || fetch(event.request).then(function(response) {
-        //             if (event.request.method == "GET" && event.request.url) {
-        //                 cache.add(event.request, response.clone()).catch(function() {
-        //                     console.log('Could not cache ' + event.request);
-        //                 });
-        //             }
-        //         }).catch(function(err) {
-        //             console.log('offline!');
-        //         });
-        //     }).catch(function(err) {
-        //         console.log('offline!');
-        //     });
-        // })
-    );
+            })
+        )
+    }
 });

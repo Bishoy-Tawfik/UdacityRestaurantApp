@@ -25,7 +25,14 @@ function syncData() {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                    })
+                    }).then(res => {
+                        console.log('The comment was submitted correctly!');
+                        idbKeyval.del(element);
+                        return res;
+
+                    }).catch(function(err) {
+                        return err;
+                    });
                 }
             });
         });

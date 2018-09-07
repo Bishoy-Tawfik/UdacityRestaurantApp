@@ -204,16 +204,6 @@ function changeFavorite(checked, restaurantId) {
         },
     }).then(res => {
         console.log('Is favorite was updated correctly!');
-        caches.open(cacheName).then(function(cache) {
-            cache.delete('restaurants').then(function(response) {
-                console.log('restaurants is deleted!');
-            }).then(function() {
-                setTimeout(function() {
-                    update(new Request('http://localhost:1337/restaurants')), 2000
-                });
-            })
-        });
-
 
     }).catch(err => {
         console.log('Is favorite failed to be updated, no worries it will be synced later!');
@@ -227,13 +217,13 @@ function changeFavorite(checked, restaurantId) {
 
 }
 
-function update(request) {
-    return caches.open(cacheName).then(function(cache) {
-        return fetch(request).then(function(response) {
-            return cache.put(request, response.clone()).then(function() {
-                console.log(response);
-                return response;
-            });
-        });
-    });
-}
+// function update(request) {
+//     return caches.open(cacheName).then(function(cache) {
+//         return fetch(request).then(function(response) {
+//             return cache.put(request, response.clone()).then(function() {
+//                 console.log(response);
+//                 return response;
+//             });
+//         });
+//     });
+// }
